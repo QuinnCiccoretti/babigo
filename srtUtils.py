@@ -1,20 +1,4 @@
-﻿# ==================================================================================
-# Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-
-# Permission is hereby granted, free of charge, to any person obtaining a copy of this
-# software and associated documentation files (the "Software"), to deal in the Software
-# without restriction, including without limitation the rights to use, copy, modify,
-# merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
-# permit persons to whom the Software is furnished to do so.
-
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-# INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
-# PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-# HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-# ==================================================================================
-#
+﻿#
 # srtUtils.py
 # by: Rob Dachowski
 # For questions or feedback, please contact robdac@amazon.com
@@ -32,6 +16,7 @@ import re
 import codecs
 from audioUtils import *
 import math
+import re
 
 
 # ==================================================================================
@@ -107,64 +92,47 @@ def writeTranslationToSRT( transcript, sourceLangCode, targetLangCode, srtFileNa
 #                 translation - the JSON output from Amazon Translate
 #                 targetLangCode - the language code for the translated content (e.g. Spanich = "ES")
 # ==================================================================================	
+def chunks(lst, n):
+    for i in xrange(0, len(lst), n):
+        yield lst[i:i + n]
+
 def getPhrasesFromTranslation( translation, targetLangCode ):
 
 	# Now create phrases from the translation
-	words = translation.split()
+        print("Translation:")
+        print(translation)
+        n_chunks = 7 #min(, len(translation))
+	wordchunks = chunks(translation, n_chunks)
 	
-	print( words ) #debug statement
 	
 	#set up some variables for the first pass
 	phrase =  newPhrase()
 	phrases = []
-	nPhrase = True
-	x = 0
-	c = 0
 	seconds = 0
+        current_phrase_num = 0
 
 	print "==> Creating phrases from translation..."
-        words_per_phrase = 5
-        num_words = len(words)
-        if(num_words < words_per_phrase):
-            words_per_phrase = 3
-        if(targetLangCode=="ja"):
-            words_per_phrase = 1
-        print("Number of words:" +str(num_words))
-	for word in words:
-
-		# if it is a new phrase, then get the start_time of the first item
-		if nPhrase == True:
-			phrase["start_time"] = getTimeCode( seconds )
-			nPhrase = False
-			c += 1
-				
-		# Append the word to the phrase...
-		phrase["words"].append(word)
-		x += 1
+        #words_per_phrase = 5
+        #num_words = len(words)
+        #if(num_words < words_per_phrase):
+        #    words_per_phrase = 3
+        #if(targetLangCode=="ja"):
+        #    words_per_phrase = 1
+	for chunk in wordchunks:
+                current_phrase_num+=1
+                phrase["start_time"] = getTimeCode( seconds )
+                phrase["words"] = chunk
 		
-		
-		# now add the phrase to the phrases, generate a new phrase, etc.
-		if x == words_per_phrase :
-		
-			# For Translations, we now need to calculate the end time for the phrase
-			psecs = getSecondsFromTranslation( getPhraseText( phrase), targetLangCode, "phraseAudio" + str(c) + ".mp3" ) 
-			seconds += psecs
-			phrase["end_time"] = getTimeCode( seconds )
-		
-			#print c, phrase
-			phrases.append(phrase)
-			phrase = newPhrase()
-			nPhrase = True
-			#seconds += .001
-			x = 0
-			
-		# This if statement is to address a defect in the SubtitleClip.   If the Subtitles end up being
-		# a different duration than the content, MoviePy will sometimes fail with unexpected errors while
-		# processing the subclip.   This is limiting it to something less than the total duration for our example
-		# however, you may need to modify or eliminate this line depending on your content.
-		#if c == 30:
-		#	break
-			
+                # For Translations, we now need to calculate the end time for the phrase
+                tempfilename = "phraseAudio" + str(current_phrase_num) + ".mp3" 
+                psecs = getSecondsFromTranslation( getPhraseText( phrase), targetLangCode, tempfilename) 
+                seconds += psecs
+                phrase["end_time"] = getTimeCode( seconds )
+        
+                #print c, phrase
+                phrases.append(phrase)
+                phrase = newPhrase()
+                #seconds += .001
 	return phrases
 	
 

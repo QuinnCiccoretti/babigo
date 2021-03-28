@@ -101,7 +101,7 @@ def createVideo( originalClipName, subtitlesFileName, outputFileName, alternateA
 
 
 	print "\t" + strftime( "%H:%M:%S", gmtime()), "Creating Subtitles Track..."
-	annotated_clips = [annotate(clip.subclip(from_t, to_t), txt) for (from_t, to_t), txt in subs]
+	annotated_clips = [clip.subclip(from_t, to_t) for (from_t, to_t), txt in subs]
 
 
 
@@ -110,6 +110,7 @@ def createVideo( originalClipName, subtitlesFileName, outputFileName, alternateA
 	final = concatenate_videoclips( annotated_clips )
 
 	print "\t" + strftime( "%H:%M:%S", gmtime()), "Writing video file: " + outputFileName 
+        #dirty hack to avoid outputting unnecessary english files
         if(not outputFileName.split(".")[0].endswith("en")):
             final.write_videofile(outputFileName)
         
