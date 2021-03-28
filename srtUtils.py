@@ -123,9 +123,10 @@ def getPhrasesFromTranslation( translation, targetLangCode ):
 	seconds = 0
 
 	print "==> Creating phrases from translation..."
-
+        words_per_phrase = 10
         num_words = len(words)
-        words_per_phrase = 7
+        if(num_words < words_per_phrase):
+            words_per_phrase = 1
         print("Number of words:" +str(num_words))
 	for word in words:
 
@@ -141,7 +142,7 @@ def getPhrasesFromTranslation( translation, targetLangCode ):
 		
 		
 		# now add the phrase to the phrases, generate a new phrase, etc.
-		if x == math.floor(num_words / words_per_phrase) :
+		if x == words_per_phrase :
 		
 			# For Translations, we now need to calculate the end time for the phrase
 			psecs = getSecondsFromTranslation( getPhraseText( phrase), targetLangCode, "phraseAudio" + str(c) + ".mp3" ) 

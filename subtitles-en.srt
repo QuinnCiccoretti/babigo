@@ -1,4 +1,12 @@
 1
-00:00:01,439 --> 00:00:05,559
-Yo, what's up? Welcome to my crib.
+00:00:00,640 --> 00:00:03,200
+Hello, everybody. My name is Quinn Chickadee,
+
+2
+00:00:03,390 --> 00:00:07,700
+and this is my apartment. I am now add
+
+3
+00:00:07,700 --> 00:00:13,660
+living for approximately greater than 10 seconds to test computer
 

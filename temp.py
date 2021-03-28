@@ -45,7 +45,7 @@ from audioUtils import *
 #                 font - the font to use for the text
 #
 # ==================================================================================
-def annotate(clip, txt, txt_color='white', fontsize=24, font='Arial-Bold'):
+def annotate(clip, txt, txt_color='white', fontsize=24, font='Comic-Sans-MS'):
     # Writes a text at the bottom of the clip  'Xolonium-Bold'
     txtclip = editor.TextClip(txt, fontsize=fontsize, font=font, color=txt_color).on_color(color=[0,0,0])
     cvc = editor.CompositeVideoClip([clip, txtclip.set_pos(('center', 50))])
@@ -84,7 +84,7 @@ def createVideo( originalClipName, subtitlesFileName, outputFileName, alternateA
 		print strftime( "\t" + "%H:%M:%S", gmtime()), "Using original audio track..."
 		
 	# Create a lambda function that will be used to generate the subtitles for each sequence in the SRT
-	generator = lambda txt: TextClip(txt, font='Arial-Bold', fontsize=24, color='white')
+	generator = lambda txt: TextClip(txt, font='Comic-Sans-MS', fontsize=24, color='white')
 
 	# read in the subtitles files
 	print "\t" + strftime("%H:%M:%S", gmtime()), "Reading subtitle file: " + subtitlesFileName 

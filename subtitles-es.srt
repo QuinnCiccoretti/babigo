@@ -1,8 +1,4 @@
 1
-00:00:00,000 --> 00:00:01,280
-Oye,¿qué pasa?
-
-2
-00:00:01,280 --> 00:00:02,429
-Bienvenidos a mi
+00:00:00,000 --> 00:00:13,109
+Hola a todo el mundo. Mi nombre es Quinn Chickadee, y este es mi apartamento. Ahora estoy añadir vida durante aproximadamente más de 10 segundos para probar el código de la computadora. Hermoso,¿no?
 
