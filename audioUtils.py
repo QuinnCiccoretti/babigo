@@ -125,12 +125,12 @@ def writeAudioStream( response, audioFileName ):
 def getVoiceId( targetLangCode ):
 
 	# Feel free to add others as desired
-	if targetLangCode == "es":
-		voiceId = "Penelope"
-	elif targetLangCode == "de":
-		voiceId = "Marlene"
+	#if targetLangCode == "es":
+	#	voiceId = "Penelope"
+	#elif targetLangCode == "de":
+	#	voiceId = "Marlene"
 		
-	return voiceId
+	return targetLangCode
 	
 	
 # ==================================================================================

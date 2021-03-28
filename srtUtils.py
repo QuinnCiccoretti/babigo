@@ -123,10 +123,10 @@ def getPhrasesFromTranslation( translation, targetLangCode ):
 	seconds = 0
 
 	print "==> Creating phrases from translation..."
-        words_per_phrase = 10
+        words_per_phrase = 5
         num_words = len(words)
         if(num_words < words_per_phrase):
-            words_per_phrase = 1
+            words_per_phrase = 3
         print("Number of words:" +str(num_words))
 	for word in words:
 
