@@ -1,0 +1,4 @@
+1
+00:00:01,439 --> 00:00:05,559
+Yo, what's up? Welcome to my crib.
+

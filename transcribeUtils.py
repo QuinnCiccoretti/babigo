@@ -54,7 +54,7 @@ def createTranscribeJob( region, bucket, mediaFile ):
 		LanguageCode = "en-US", \
 		MediaFormat = "mp4", \
 		Media = { "MediaFileUri" : mediaUri }, \
-		Settings = { "VocabularyName" : "MyVocabulary" } \
+		#Settings = { "VocabularyName" : "MyVocabulary" } \
 		)
 	
 	# return the response structure found in the Transcribe Documentation

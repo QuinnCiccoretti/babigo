@@ -31,6 +31,8 @@ from moviepy import editor
 from moviepy.video.tools.subtitles import SubtitlesClip
 from time import gmtime, strftime
 from audioUtils import *
+import boto3
+s3 = boto3.client('s3')
 
 
 # ==================================================================================
@@ -62,10 +64,13 @@ def createVideo( originalClipName, subtitlesFileName, outputFileName, alternateA
 	# Note that if we need to use an alternate audio track, the last parm should = False
 	
 	print( "\n==> createVideo " )
-
+        ## first download it from s3
+        local_name = 'temp_local_' + originalClipName
+        with open(local_name, 'wb' as f: 
+            s3.download('babigo-resources', originalClipName, f)
 	# Load the original clip
 	print "\t" + strftime("%H:%M:%S", gmtime()), "Reading video clip: " + originalClipName 
-	clip = VideoFileClip(originalClipName)
+	clip = VideoFileClip(local_name)
 	print "\t\t==> Original clip duration: " + str(clip.duration)
 
 	if useOriginalAudio == False:
