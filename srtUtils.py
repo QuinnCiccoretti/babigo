@@ -31,7 +31,7 @@ import boto3
 import re
 import codecs
 from audioUtils import *
-
+import math
 
 
 # ==================================================================================
@@ -112,7 +112,7 @@ def getPhrasesFromTranslation( translation, targetLangCode ):
 	# Now create phrases from the translation
 	words = translation.split()
 	
-	#print( words ) #debug statement
+	print( words ) #debug statement
 	
 	#set up some variables for the first pass
 	phrase =  newPhrase()
@@ -124,6 +124,9 @@ def getPhrasesFromTranslation( translation, targetLangCode ):
 
 	print "==> Creating phrases from translation..."
 
+        num_words = len(words)
+        words_per_phrase = 7
+        print("Number of words:" +str(num_words))
 	for word in words:
 
 		# if it is a new phrase, then get the start_time of the first item
@@ -138,7 +141,7 @@ def getPhrasesFromTranslation( translation, targetLangCode ):
 		
 		
 		# now add the phrase to the phrases, generate a new phrase, etc.
-		if x == 10:
+		if x == math.floor(num_words / words_per_phrase) :
 		
 			# For Translations, we now need to calculate the end time for the phrase
 			psecs = getSecondsFromTranslation( getPhraseText( phrase), targetLangCode, "phraseAudio" + str(c) + ".mp3" ) 
@@ -156,8 +159,8 @@ def getPhrasesFromTranslation( translation, targetLangCode ):
 		# a different duration than the content, MoviePy will sometimes fail with unexpected errors while
 		# processing the subclip.   This is limiting it to something less than the total duration for our example
 		# however, you may need to modify or eliminate this line depending on your content.
-		if c == 30:
-			break
+		#if c == 30:
+		#	break
 			
 	return phrases
 	
@@ -260,12 +263,14 @@ def translateTranscript( transcript, sourceLangCode, targetLangCode, region ):
 # ==================================================================================
 def writeSRT( phrases, filename ):
 	print "==> Writing phrases to disk..."
+        print(phrases, filename)
 
 	# open the files
 	e = codecs.open(filename,"w+", "utf-8")
 	x = 1
 	
 	for phrase in phrases:
+                print(phrase)
 
 		# determine how many words are in the phrase
 		length = len(phrase["words"])
