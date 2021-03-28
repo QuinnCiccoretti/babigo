@@ -31,8 +31,6 @@ from moviepy import editor
 from moviepy.video.tools.subtitles import SubtitlesClip
 from time import gmtime, strftime
 from audioUtils import *
-import boto3
-s3 = boto3.client('s3')
 
 
 # ==================================================================================
@@ -47,6 +45,11 @@ s3 = boto3.client('s3')
 #                 font - the font to use for the text
 #
 # ==================================================================================
+def annotate(clip, txt, txt_color='white', fontsize=24, font='Arial-Bold'):
+    # Writes a text at the bottom of the clip  'Xolonium-Bold'
+    txtclip = editor.TextClip(txt, fontsize=fontsize, font=font, color=txt_color).on_color(color=[0,0,0])
+    cvc = editor.CompositeVideoClip([clip, txtclip.set_pos(('center', 50))])
+    return cvc.set_duration(clip.duration)
 	
 # ==================================================================================
 # Function: createVideo
@@ -66,11 +69,12 @@ def createVideo( originalClipName, subtitlesFileName, outputFileName, alternateA
 	print( "\n==> createVideo " )
         ## first download it from s3
         local_name = 'temp_local_' + originalClipName
-        with open(local_name, 'wb' as f: 
-            s3.download('babigo-resources', originalClipName, f)
+        s3.download_file('babigo-resources', originalClipName, local_name)
 	# Load the original clip
 	print "\t" + strftime("%H:%M:%S", gmtime()), "Reading video clip: " + originalClipName 
 	clip = VideoFileClip(local_name)
+
+	clip = VideoFileClip(originalClipName)
 	print "\t\t==> Original clip duration: " + str(clip.duration)
 
 	if useOriginalAudio == False:
@@ -84,10 +88,11 @@ def createVideo( originalClipName, subtitlesFileName, outputFileName, alternateA
 		print strftime( "\t" + "%H:%M:%S", gmtime()), "Using original audio track..."
 		
 	# Create a lambda function that will be used to generate the subtitles for each sequence in the SRT
+	generator = lambda txt: TextClip(txt, font='Arial-Bold', fontsize=24, color='white')
 
 	# read in the subtitles files
 	print "\t" + strftime("%H:%M:%S", gmtime()), "Reading subtitle file: " + subtitlesFileName 
-	subs = SubtitlesClip(subtitlesFileName, False)
+	subs = SubtitlesClip(subtitlesFileName, generator)
 	print "\t\t==> Subtitles duration before: " + str(subs.duration)
 	subs = subs.subclip( 0, clip.duration - .001)
 	subs.set_duration( clip.duration - .001 )
@@ -96,7 +101,7 @@ def createVideo( originalClipName, subtitlesFileName, outputFileName, alternateA
 
 
 	print "\t" + strftime( "%H:%M:%S", gmtime()), "Creating Subtitles Track..."
-	annotated_clips = [clip.subclip(from_t, to_t) for (from_t, to_t), txt in subs]
+	annotated_clips = [annotate(clip.subclip(from_t, to_t), txt) for (from_t, to_t), txt in subs]
 
 
 
