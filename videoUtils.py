@@ -47,7 +47,7 @@ s3 = boto3.client('s3')
 #                 font - the font to use for the text
 #
 # ==================================================================================
-def annotate(clip, txt, txt_color='white', fontsize=24, font='Comic-Sans-MS'):
+def annotate(clip, txt, txt_color='white', fontsize=24, font='Arial-Bold'):
     # Writes a text at the bottom of the clip  'Xolonium-Bold'
     txtclip = editor.TextClip(txt, fontsize=fontsize, font=font, color=txt_color).on_color(color=[0,0,0])
     cvc = editor.CompositeVideoClip([clip, txtclip.set_pos(('center', 50))])
@@ -67,7 +67,7 @@ def annotate(clip, txt, txt_color='white', fontsize=24, font='Comic-Sans-MS'):
 def createVideo( originalClipName, subtitlesFileName, outputFileName, alternateAudioFileName, useOriginalAudio=True ):
 	# This function is used to put all of the pieces together.   
 	# Note that if we need to use an alternate audio track, the last parm should = False
-	
+      	
 	print( "\n==> createVideo " )
         ## first download it from s3
         local_name = 'temp_local_' + originalClipName
@@ -88,7 +88,7 @@ def createVideo( originalClipName, subtitlesFileName, outputFileName, alternateA
 		print strftime( "\t" + "%H:%M:%S", gmtime()), "Using original audio track..."
 		
 	# Create a lambda function that will be used to generate the subtitles for each sequence in the SRT
-	generator = lambda txt: TextClip(txt, font='Comic-Sans-MS', fontsize=24, color='white')
+	generator = lambda txt: TextClip(txt, font='Arial-Bold', fontsize=24, color='white')
 
 	# read in the subtitles files
 	print "\t" + strftime("%H:%M:%S", gmtime()), "Reading subtitle file: " + subtitlesFileName 
@@ -110,4 +110,6 @@ def createVideo( originalClipName, subtitlesFileName, outputFileName, alternateA
 	final = concatenate_videoclips( annotated_clips )
 
 	print "\t" + strftime( "%H:%M:%S", gmtime()), "Writing video file: " + outputFileName 
-	final.write_videofile(outputFileName)
+        if(not outputFileName.split(".")[0].endswith("en")):
+            final.write_videofile(outputFileName)
+        

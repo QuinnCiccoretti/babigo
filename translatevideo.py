@@ -69,7 +69,7 @@ print( "\n==> Transcription Job: " + response["TranscriptionJob"]["Transcription
 
 while( response["TranscriptionJob"]["TranscriptionJobStatus"] == "IN_PROGRESS"):
 	print( "."),
-	time.sleep( 30 )
+	time.sleep( 2 )
 	response = getTranscriptionJobStatus( response["TranscriptionJob"]["TranscriptionJobName"] )
 
 print( "\nJob Complete")

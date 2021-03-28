@@ -127,6 +127,8 @@ def getPhrasesFromTranslation( translation, targetLangCode ):
         num_words = len(words)
         if(num_words < words_per_phrase):
             words_per_phrase = 3
+        if(targetLangCode=="ja"):
+            words_per_phrase = 1
         print("Number of words:" +str(num_words))
 	for word in words:
 
